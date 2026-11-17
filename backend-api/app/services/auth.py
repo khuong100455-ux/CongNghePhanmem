@@ -137,4 +137,5 @@ class AuthService:
         except jwt.InvalidTokenError:
             return
         ttl = max(int(claims["exp"] - datetime.now(timezone.utc).timestamp()), 1)
+        # Thu hồi jti đến khi token hết hạn để phiên đăng nhập không dùng lại được.
         await redis.setex(f"auth:revoked:{claims['jti']}", ttl, "1")

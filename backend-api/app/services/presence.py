@@ -31,6 +31,7 @@ def _distance_meters(first: tuple[float, float], second: tuple[float, float]) ->
 
 class PresenceService:
     async def _prune_and_count(self, redis: Any, now: float) -> int:
+        # Chỉ tính khách còn gửi heartbeat trong thời hạn hoạt động.
         await redis.zremrangebyscore(PRESENCE_KEY, "-inf", now - VISITOR_TIMEOUT_SECONDS)
         return int(await redis.zcard(PRESENCE_KEY))
 
@@ -66,6 +67,7 @@ class PresenceService:
         poi_counts: dict[str, int] = {}
         stale_visitors = set(visitor_pois) - active_visitors
         if stale_visitors:
+            # Hash POI lưu riêng với danh sách online nên cần dọn khách đã hết hạn.
             await redis.hdel(PRESENCE_POI_KEY, *stale_visitors)
         for visitor_id, poi_id in visitor_pois.items():
             if visitor_id in active_visitors:
@@ -158,6 +160,7 @@ class PresenceService:
             )
         )
         grid_size = get_settings().heatmap_grid_size_meters
+        # Gom vị trí vào lưới để bản đồ hiển thị cụm khách thay vì từng tọa độ riêng.
         cells: dict[tuple[int, int], dict[str, float | int]] = {}
         for visitor in visitors:
             latitude, longitude = visitor.latitude, visitor.longitude

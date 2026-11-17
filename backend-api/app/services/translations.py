@@ -173,6 +173,7 @@ class TranslationService:
         from deep_translator import GoogleTranslator, MyMemoryTranslator
 
         google_code, memory_code = FREE_TARGETS[language]
+        # Nếu nhà cung cấp đầu lỗi, thử dịch vụ dự phòng với giới hạn đoạn nhỏ hơn.
         providers = (
             (lambda: GoogleTranslator(source="vi", target=google_code), 4500),
             (lambda: MyMemoryTranslator(source="vi-VN", target=memory_code), 450),
@@ -273,6 +274,7 @@ class TranslationService:
             )
             database.add(translation)
         else:
+            # Bản dịch được chỉnh sửa phải quay về nháp và duyệt lại trước khi xuất bản.
             translation.text = text
             translation.status = TranslationStatus.DRAFT.value
             translation.updated_at = now

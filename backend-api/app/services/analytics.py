@@ -83,6 +83,7 @@ class AnalyticsService:
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="end_date must not be earlier than start_date",
             )
+        # Dùng mốc kết thúc độc quyền để lấy đủ dữ liệu đến hết ngày end_date.
         start = datetime.combine(start_date, time.min, timezone.utc)
         end = datetime.combine(end_date + timedelta(days=1), time.min, timezone.utc)
         conditions = (
