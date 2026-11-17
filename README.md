@@ -2,6 +2,12 @@
 
 Backend FastAPI và trang Admin Dashboard HTML/CSS/JavaScript thuần. REST API dùng prefix `/api`, tài liệu tại `http://localhost:8000/docs`.
 
+## Phần việc của Nguyễn Duy Khương
+
+- Phát triển frontend cho Admin Dashboard và giao diện PWA dành cho khách tham quan.
+- Thực hiện chức năng quản lý tài khoản Admin: thêm, sửa và xóa trên dashboard (`admin-dashboard/dashboard.js`).
+- Các thao tác quản lý Admin kết nối API tại `/api/admin/admins`; quyền tạo, sửa và xóa được giới hạn cho super admin (`backend-api/app/routers/admin_accounts.py`).
+
 ## Chạy backend trên Windows
 
 Yêu cầu Python 3.10+, SQL Server và Redis đang chạy; SQL Server ODBC Driver 18 cần được cài trên máy. Tạo database `CNPM` trong SQL Server trước khi chạy. Mở PowerShell tại thư mục dự án:
