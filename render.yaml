@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: multilingual-tourist-guide-api
+    runtime: docker
+    plan: free
+    autoDeploy: false
+    dockerfilePath: ./backend-api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: ENVIRONMENT
+        value: production
+      - key: DEMO_MODE
+        value: "false"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_SEED_EMAIL
+        sync: false
+      - key: ADMIN_SEED_PASSWORD
+        sync: false
