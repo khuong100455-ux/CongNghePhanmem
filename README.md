@@ -4,7 +4,7 @@ Backend FastAPI và trang Admin Dashboard HTML/CSS/JavaScript thuần. REST API 
 
 ## Phần việc của Nguyễn Duy Khương
 
-- Phát triển frontend cho Admin Dashboard và giao diện PWA dành cho khách tham quan.
+- Tạo trang đăng nhập admin.
 - Thực hiện chức năng quản lý tài khoản Admin: thêm, sửa và xóa trên dashboard (`admin-dashboard/dashboard.js`).
 - Các thao tác quản lý Admin kết nối API tại `/api/admin/admins`; quyền tạo, sửa và xóa được giới hạn cho super admin (`backend-api/app/routers/admin_accounts.py`).
 
