@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0b0b0b">
   <title>Quản trị | Du lịch đa ngôn ngữ</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=17">
 </head>
 <body>
   <div class="app-shell">
@@ -86,7 +86,13 @@
         <div class="form-row"><label>Vĩ độ<input name="latitude" type="number" step="any" min="-90" max="90" required></label><label>Kinh độ<input name="longitude" type="number" step="any" min="-180" max="180" required></label><label>Bán kính geofence (m)<input name="geofence_radius_m" type="number" min="10" max="1000" value="50" required></label></div>
         <p class="muted compact">Tìm địa chỉ hoặc địa danh ở Việt Nam, chọn kết quả để chuyển ghim; có thể bấm bản đồ hoặc kéo ghim để chỉnh tọa độ. Tìm kiếm dùng dữ liệu OpenStreetMap qua Photon.</p>
         <div class="poi-map-search"><input id="poi-map-search-input" type="search" maxlength="200" placeholder="Ví dụ: Hồ Gươm, Hà Nội" aria-label="Tìm địa điểm trên bản đồ"><button id="poi-map-search-button" class="button button-outline" type="button">Tìm</button></div>
-        <p id="poi-map-search-status" class="map-status" role="status"></p><div id="poi-map-search-results" class="map-search-results" aria-label="Kết quả tìm kiếm"></div><div id="poi-picker-map" class="map map-picker"></div><p id="picker-map-status" class="map-status" role="status"></p>
+        <p id="poi-map-search-status" class="map-status" role="status"></p><div id="poi-map-search-results" class="map-search-results" aria-label="Kết quả tìm kiếm"></div><div id="poi-picker-map" class="map map-picker"></div>
+        <div class="poi-distance-tools">
+          <button id="poi-distance-mode" class="button button-outline" type="button" aria-pressed="false">Đo khoảng cách</button>
+          <button id="poi-distance-reset" class="button button-outline" type="button" disabled>Xóa phép đo</button>
+        </div>
+        <p id="poi-distance-result" class="map-status" role="status" aria-live="polite"></p>
+        <p id="picker-map-status" class="map-status" role="status"></p>
         <label>Nội dung tiếng Việt (bắt buộc)<textarea name="content_vi" rows="3" required maxlength="50000"></textarea></label>
         <p id="poi-translation-status" class="muted compact" role="status" aria-live="polite">Khi ngừng nhập tiếng Việt, bản dịch English, 日本語, 한국어 và 中文 sẽ tự động cập nhật và thay thế bản dịch cũ.</p>
         <div class="form-row"><label>English<textarea name="content_en" rows="3" maxlength="50000"></textarea></label><label>日本語<textarea name="content_ja" rows="3" maxlength="50000"></textarea></label></div>
@@ -103,6 +109,6 @@
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="dashboard.js?v=24"></script>
+  <script src="dashboard.js?v=25"></script>
 </body>
 </html>

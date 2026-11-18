@@ -31,6 +31,10 @@ const poiPageSize = 10;
 let selectedTranslationLanguage = "en";
 let pickerMap;
 let pickerMarker;
+let measureMode = false;
+let measurePoints = [];
+let measureMarkers = [];
+let measureLine = null;
 let lastMapSearchAt = 0;
 let translationPreviewTimer;
 let translationPreviewRequest = 0;
@@ -365,6 +369,8 @@ function bindControls() {
   byId("poi-image-file").addEventListener("change", selectPoiImage);
   byId("poi-image-upload-button").addEventListener("click", uploadPoiImage);
   byId("poi-form").elements.image_url.addEventListener("input", (event) => updatePoiImagePreview(event.target.value));
+  byId("poi-distance-mode").addEventListener("click", toggleDistanceMode);
+  byId("poi-distance-reset").addEventListener("click", resetDistanceMeasurement);
   byId("poi-map-search-button").addEventListener("click", searchPoiMap);
   byId("poi-map-search-input").addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -384,6 +390,10 @@ function bindControls() {
     button.addEventListener("click", () => byId(button.dataset.closeDialog).close());
   });
   byId("poi-dialog").addEventListener("close", () => {
+    measureMode = false;
+    resetDistanceMeasurement();
+    byId("poi-distance-mode").textContent = "Đo khoảng cách";
+    byId("poi-distance-mode").setAttribute("aria-pressed", "false");
     pickerMap?.remove();
     pickerMap = null;
     pickerMarker = null;
@@ -474,6 +484,10 @@ function initializePickerMap(poi) {
   pickerMarker = L.marker(position, { draggable: true, title: "Vị trí điểm tham quan" }).addTo(pickerMap);
   pickerMarker.on("dragend", () => setPoiCoordinates(pickerMarker.getLatLng()));
   pickerMap.on("click", (event) => {
+    if (measureMode) {
+      addDistancePoint(event.latlng);
+      return;
+    }
     pickerMarker.setLatLng(event.latlng);
     setPoiCoordinates(event.latlng);
   });
@@ -654,6 +668,62 @@ function setPoiCoordinates(point) {
   const longitude = typeof point.lng === "function" ? point.lng() : point.lng;
   form.elements.latitude.value = Number(latitude).toFixed(6);
   form.elements.longitude.value = Number(longitude).toFixed(6);
+}
+
+function toggleDistanceMode() {
+  measureMode = !measureMode;
+  const button = byId("poi-distance-mode");
+  button.textContent = measureMode ? "Tắt đo khoảng cách" : "Đo khoảng cách";
+  button.setAttribute("aria-pressed", String(measureMode));
+  resetDistanceMeasurement();
+}
+
+function resetDistanceMeasurement() {
+  measureMarkers.forEach((marker) => pickerMap?.removeLayer(marker));
+  measureMarkers = [];
+  if (measureLine) pickerMap?.removeLayer(measureLine);
+  measureLine = null;
+  measurePoints = [];
+
+  byId("poi-distance-result").textContent = "";
+  byId("poi-distance-reset").disabled = true;
+  byId("picker-map-status").textContent = measureMode
+    ? "Chọn điểm thứ nhất trên bản đồ."
+    : "Bấm lên bản đồ hoặc kéo ghim để đặt vị trí chính xác.";
+}
+
+function addDistancePoint(point) {
+  if (measurePoints.length === 2) resetDistanceMeasurement();
+
+  measurePoints.push(point);
+  const marker = L.circleMarker(point, {
+    radius: 7,
+    color: "#ffc107",
+    fillColor: "#ffc107",
+    fillOpacity: 1,
+    weight: 2,
+  }).addTo(pickerMap);
+  marker.bindTooltip(`Điểm ${measurePoints.length}`).openTooltip();
+  measureMarkers.push(marker);
+  byId("poi-distance-reset").disabled = false;
+
+  if (measurePoints.length === 1) {
+    byId("picker-map-status").textContent =
+      "Đã chọn điểm thứ nhất. Chọn điểm thứ hai.";
+    return;
+  }
+
+  const [first, second] = measurePoints;
+  const distanceMeters = first.distanceTo(second);
+  measureLine = L.polyline(measurePoints, {
+    color: "#ffc107",
+    weight: 3,
+  }).addTo(pickerMap);
+  byId("poi-distance-result").textContent =
+    `Khoảng cách: ${distanceMeters.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} m ` +
+    `(${(distanceMeters / 1000).toFixed(2)} km).`;
+  byId("picker-map-status").textContent =
+    "Đã đo xong. Bấm điểm thứ ba để đo cặp mới.";
 }
 
 function updatePoiImagePreview(imageUrl) {
